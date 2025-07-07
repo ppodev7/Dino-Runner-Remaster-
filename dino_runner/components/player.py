@@ -1,0 +1,1 @@
+# Aqui é onde vai ficar as fotos/infos do jogo, movimentação 
