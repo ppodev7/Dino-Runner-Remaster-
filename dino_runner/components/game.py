@@ -1,31 +1,44 @@
-import pygame
+import pygame 
+import sys 
+from dino_runner.utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH
+from dino_runner.components.player import Player
 
-from dino_runner.utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT, FPS # Importa da pasta constants as constantes já definidas
-from dino_runner.components.player.player import Player # Importa o arquivo player para a implementação dele no jogo. 
 
-class Game: # Planta 
+
+class Game: 
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) # Function do pygame que adiciona as dimensões da tela 
-        pygame.display.set_caption("Dino Runner Trigger") # Nomeia a janela
-        self.clock = pygame.time.Clock() # Define o fps (que no caso está no final)
+        pygame.display.set_caption("Chrome Dino Runner Trigger")
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.clock = pygame.time.Clock()
+        self.jogando = True
+        # Usar um grupo de sprites facilita o gerenciamento de múltiplos objetos (jogador, obstáculos, nuvens).
+        self.all_sprites = pygame.sprite.Group()
         self.player = Player()
-        self.running = True
+        self.all_sprites.add(self.player)
 
-    def execute(self): # Função da exec do game 
-        while self.running:
-            for event in pygame.event.get(): # A cada evento, faça algo. Apenas se o jogador quiser quitar faça
-                if event.type == pygame.QUIT: # -> 
-                    self.running = False # Para de correr quando o jogador quitar 
+    def execute (self):
+        while self.jogando: 
+            self.handle_events() # Verificar o que o jogador está fazendo
 
-            user_input = pygame.key.get_pressed() # -> Entrada do usuário, a tcle estará pressinada
+            user_input = pygame.key.get_pressed()
+            self.update(user_input) # Mudança de estados 
+            self.draw()
 
-            self.screen.fill((0, 0, 0))  # Fundo branco
+            self.clock.tick(60)
+            
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
-            self.player.update(user_input) # Atualiza a entrada do usuário 
-            self.player.draw(self.screen) # "Desenha" o usuário na tela 
-
-            pygame.display.update() # Atualiza a tela
-            self.clock.tick(FPS) # -> Nesse caso o FPS está definido em Utils
-
-        pygame.quit()
+    def update(self, user_input):
+        
+        self.all_sprites.update(user_input)
+    
+    def draw(self):
+        self.screen.fill((0, 0, 0))
+        
+        self.all_sprites.draw(self.screen)
+        pygame.display.update()
