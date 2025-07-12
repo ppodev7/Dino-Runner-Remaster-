@@ -5,15 +5,16 @@ from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING, DUCKING_SHIEL
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.dino_run = RUNNING
+        
+        self.dino_run = RUNNING 
         self.dino_jump = JUMPING
         self.dino_duck = DUCKING
         self.dino_dead = DEAD
-        self.dino_duck_shield = DUCKING_SHIELD
-        self.dino_width = 12
-        self.dino_height = 12
+        
         self.step_index = 0
-        self.image = ICON
+        
+        # Imagem digital e retângulo de colisão
+        self.image = self.dino_run[0]
         self.rect = self.image.get_rect()
         self.rect.x = 80
         self.rect.y = 310
@@ -77,6 +78,7 @@ class Player(pygame.sprite.Sprite):
             self.jump()
         elif self.is_ducking:
             self.duck()
+            
         
     
         if not self.is_jumping:

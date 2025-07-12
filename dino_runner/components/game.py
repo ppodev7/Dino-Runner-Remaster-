@@ -78,7 +78,7 @@ class Game:
             
             
     def check_collision(self):
-        if pygame.sprite.spritecollide(self.player, self.obstacle_group, False):
+        if pygame.sprite.spritecollide(self.player, self.obstacle_group, False, pygame.sprite.collide_mask):
             self.player.die()
             self.draw()
             pygame.display.update()
