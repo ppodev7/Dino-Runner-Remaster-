@@ -5,6 +5,7 @@ from dino_runner.utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH, BG,SMALL_CA
 from dino_runner.components.player import Player
 from dino_runner.components.cloud import Cloud
 from dino_runner.components.obstacles.obstacle import Obstacle
+from dino_runner.components.obstacles.bird import Bird
 
 
 
@@ -68,11 +69,13 @@ class Game:
         
     def spawn_obstacles(self):
         if len(self.obstacle_group) == 0:
-            obstacle_type_choice = random.randint(0, 1)
+            obstacle_type_choice = random.randint(0, 2)
             if obstacle_type_choice == 0:
                 obstacle = Obstacle(SMALL_CACTUS, 'small_cactus')
-            else:
+            elif obstacle_type_choice == 1:
                 obstacle = Obstacle(LARGE_CACTUS, 'large_cactus')
+            else:
+                obstacle = Bird()
             self.obstacle_group.add(obstacle)
             self.all_sprites.add(obstacle)
             
