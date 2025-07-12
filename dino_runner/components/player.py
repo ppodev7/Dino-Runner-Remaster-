@@ -45,10 +45,6 @@ class Player(pygame.sprite.Sprite):
         
         self.rect.y -= self.jump_vel * 4
         self.jump_vel -= 0.4
-        
-        if self.jump_vel < -7:
-            self.is_jumping = False
-            self.jump_vel = 7
 
     def duck (self):
         self.image = self.dino_duck[self.step_index // 5]
@@ -72,27 +68,33 @@ class Player(pygame.sprite.Sprite):
     
     def update (self, user_input):
         
+        if user_input [pygame.K_UP] and not self.is_jumping:
+            self.is_running = False
+            self.is_jumping = True
+            self.is_ducking = False
+        elif user_input [pygame.K_DOWN] and not self.is_jumping:
+            self.is_running = False
+            self.is_jumping = False
+            self.is_ducking = True
+        elif not (self.is_jumping  or user_input[pygame.K_DOWN]):
+            self.is_running = True
+            self.is_jumping = False
+            self.is_ducking = False
+        
+            
         if self.is_running:
             self.run()
         elif self.is_jumping:
             self.jump()
         elif self.is_ducking:
             self.duck()
-            
-        
-    
-        if not self.is_jumping:
-           if user_input[pygame.K_UP]:
-               self.is_jumping = True
-               self.is_running = False
-               self.is_ducking = False
-           elif user_input[pygame.K_DOWN]:
-               self.is_ducking = True
-               self.is_jumping = False
-           else:
-               self.is_running = True
-               self.is_ducking = False
-            
+
+        if self.is_jumping and self.rect.y >= 310:
+            self.rect.y = 310
+            self.is_jumping = False
+            self.jump_vel = 6.5
+
+          
         
         for laser in self.lasers:
             laser.x += self.laser_speed

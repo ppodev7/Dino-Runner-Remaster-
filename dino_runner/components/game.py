@@ -1,10 +1,11 @@
 import pygame 
 import sys 
 import random
-from dino_runner.utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH, BG,SMALL_CACTUS, LARGE_CACTUS
+from dino_runner.utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH, BG
 from dino_runner.components.player import Player
 from dino_runner.components.cloud import Cloud
-from dino_runner.components.obstacles.obstacle import Obstacle
+from dino_runner.components.obstacles.cactus import Cactus
+from dino_runner.components.obstacles.bird import Bird
 
 
 
@@ -62,17 +63,14 @@ class Game:
         
         self.update_background()
         self.spawn_obstacles()
-        self.obstacle_group.update(self.game_speed, self.obstacle_group)
+        self.obstacle_group.update(self.game_speed)
         self.check_collision()
         
         
     def spawn_obstacles(self):
         if len(self.obstacle_group) == 0:
-            obstacle_type_choice = random.randint(0, 1)
-            if obstacle_type_choice == 0:
-                obstacle = Obstacle(SMALL_CACTUS, 'small_cactus')
-            else:
-                obstacle = Obstacle(LARGE_CACTUS, 'large_cactus')
+            # Escolhe aleatoriamente entre criar um Cacto ou um Pássaro
+            obstacle = random.choice([Cactus(), Bird()])
             self.obstacle_group.add(obstacle)
             self.all_sprites.add(obstacle)
             
@@ -103,7 +101,7 @@ class Game:
     
     
     def draw(self):
-        self.screen.fill((0, 0, 0))
+        self.screen.fill((255, 255, 255))
         self.draw_background()
         
         self.all_sprites.draw(self.screen) 
