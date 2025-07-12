@@ -1,5 +1,5 @@
 import pygame 
-from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING, DUCKING_SHIELD, ICON
+from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING, DUCKING_SHIELD, ICON, DEAD
 
 
 class Player(pygame.sprite.Sprite):
@@ -8,7 +8,10 @@ class Player(pygame.sprite.Sprite):
         self.dino_run = RUNNING
         self.dino_jump = JUMPING
         self.dino_duck = DUCKING
+        self.dino_dead = DEAD
         self.dino_duck_shield = DUCKING_SHIELD
+        self.dino_width = 12
+        self.dino_height = 12
         self.step_index = 0
         self.image = ICON
         self.rect = self.image.get_rect()
@@ -19,8 +22,13 @@ class Player(pygame.sprite.Sprite):
         self.is_jumping = False
         self.is_ducking = False
         
-        self.jump_vel = 8.5
-    
+        self.jump_vel = 7
+        
+        #lasers
+        self.lasers = []
+        self.laser_speed = 15 
+        self.laser_color = (255, 0, 0)
+        self.max_lasers = 100
     
     def run (self):
         self.image = self.dino_run[self.step_index // 5]
@@ -35,11 +43,11 @@ class Player(pygame.sprite.Sprite):
         self.image = self.dino_jump
         
         self.rect.y -= self.jump_vel * 4
-        self.jump_vel -= 0.8
+        self.jump_vel -= 0.4
         
-        if self.jump_vel < -8.5:
+        if self.jump_vel < -7:
             self.is_jumping = False
-            self.jump_vel = 8.5 
+            self.jump_vel = 7
 
     def duck (self):
         self.image = self.dino_duck[self.step_index // 5]
@@ -52,7 +60,13 @@ class Player(pygame.sprite.Sprite):
     
     
     def shoot (self):
-        pass
+        if len(self.lasers) < self.max_lasers:
+            laser_rect = pygame.Rect(self.rect.right, self.rect.centery - 2, 20, 4)
+            self.lasers.append(laser_rect)
+            
+    def die(self):
+        self.image = self.dino_dead
+        self.rect.y = 310
     
     
     def update (self, user_input):
@@ -64,21 +78,24 @@ class Player(pygame.sprite.Sprite):
         elif self.is_ducking:
             self.duck()
         
-        # State transitions based on user input.
-        # The jump state is handled by the jump() method, so we only check for other inputs if not jumping.
-        if not self.is_jumping:
-            if user_input[pygame.K_UP]:
-                self.is_jumping = True
-                self.is_running = False
-                self.is_ducking = False
-            elif user_input[pygame.K_DOWN]:
-                self.is_ducking = True
-                self.is_running = False
-            else:
-                self.is_running = True
-                self.is_ducking = False
-
     
-    def draw (self, screen):
-        screen.blit(self.image, self.rect)
+        if not self.is_jumping:
+           if user_input[pygame.K_UP]:
+               self.is_jumping = True
+               self.is_running = False
+               self.is_ducking = False
+           elif user_input[pygame.K_DOWN]:
+               self.is_ducking = True
+               self.is_jumping = False
+           else:
+               self.is_running = True
+               self.is_ducking = False
+            
+        
+        for laser in self.lasers:
+            laser.x += self.laser_speed
+            
+            
+        self.lasers = [laser for laser in self.lasers if laser.x < 1200]
+        
     
