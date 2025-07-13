@@ -1,7 +1,7 @@
 import pygame 
 import sys 
 import random
-from dino_runner.utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH, BG, GAME_OVER
+from dino_runner.utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH, BG, GAME_OVER, RESTART
 from dino_runner.utils.text_utils import draw_message_component
 from dino_runner.components.player import Player
 from dino_runner.components.cloud import Cloud
@@ -35,6 +35,23 @@ class Game:
         self.player = Player()
         self.all_sprites.add(self.player)
         
+        for _ in range(5):
+            cloud = Cloud()
+            self.cloud_group.add(cloud)
+            self.all_sprites.add(cloud)
+        
+        
+    def reset(self):
+        self.score = 0
+        self.game_speed = 10
+        self.x_pos_bg = 0
+        
+        self.obstacle_group.empty()
+        self.cloud_group.empty()
+        self.all_sprites.empty()
+        
+        self.player = Player()
+        self.all_sprites.add(self.player)
         for _ in range(5):
             cloud = Cloud()
             self.cloud_group.add(cloud)
@@ -97,11 +114,22 @@ class Game:
             self.screen.blit(GAME_OVER, game_over_rect)
             draw_message_component(f"Sua Pontuação: {int(self.score)}", self.screen, pos_y_center=SCREEN_HEIGHT // 2)
             draw_message_component(f"Recorde: {int(self.high_score)}", self.screen, pos_y_center=SCREEN_HEIGHT // 2 + 40)
+            restart_rect = RESTART.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 100))
+            self.screen.blit(RESTART, restart_rect)
             
             pygame.display.update()
-            pygame.time.delay(2300)
             
-            self.jogando = False
+            while True:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        mouse_pos = pygame.mouse.get_pos()
+                        if restart_rect.collidepoint(mouse_pos):
+                            self.reset()
+                            return
+
         
     def draw_background(self):
         image_width = BG.get_width()
