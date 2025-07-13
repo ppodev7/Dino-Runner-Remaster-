@@ -1,7 +1,8 @@
 import pygame 
 import sys 
 import random
-from dino_runner.utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH, BG
+from dino_runner.utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH, BG, GAME_OVER
+from dino_runner.utils.text_utils import draw_message_component
 from dino_runner.components.player import Player
 from dino_runner.components.cloud import Cloud
 from dino_runner.components.obstacles.cactus import Cactus
@@ -85,10 +86,20 @@ class Game:
             
     def check_collision(self):
         if pygame.sprite.spritecollide(self.player, self.obstacle_group, False, pygame.sprite.collide_mask):
+            
+            if self.score > self.high_score:
+                self.high_score = int(self.score)
+
             self.player.die()
             self.draw()
+            
+            game_over_rect = GAME_OVER.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+            self.screen.blit(GAME_OVER, game_over_rect)
+            draw_message_component(f"Sua Pontuação: {int(self.score)}", self.screen, pos_y_center=SCREEN_HEIGHT // 2 + 40)
+            draw_message_component(f"Recorde: {int(self.high_score)}", self.screen, pos_y_center=SCREEN_HEIGHT // 2 + 90)
+            
             pygame.display.update()
-            pygame.time.delay(2000)
+            pygame.time.delay(2300)
             
             self.jogando = False
         
