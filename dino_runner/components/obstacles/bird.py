@@ -31,6 +31,4 @@ class Bird(Obstacle):
         if self.rect.right < 0:
             self.kill()
         
-        
-
-        
+    

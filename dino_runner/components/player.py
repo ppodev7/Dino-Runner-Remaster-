@@ -1,5 +1,5 @@
 import pygame 
-from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING, DUCKING_SHIELD, ICON, DEAD
+from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING, DEAD
 
 
 class Player(pygame.sprite.Sprite):
@@ -89,10 +89,12 @@ class Player(pygame.sprite.Sprite):
         elif self.is_ducking:
             self.duck()
 
+
         if self.is_jumping and self.rect.y >= 310:
             self.rect.y = 310
             self.is_jumping = False
             self.jump_vel = 6.5
+
 
           
         
