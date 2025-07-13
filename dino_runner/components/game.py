@@ -18,7 +18,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.jogando = True
 
-        self.score = 0 
+        self.score = 0
         self.high_score = 0
         self.font = pygame.font.Font(None, 30)
         
@@ -67,7 +67,7 @@ class Game:
         
         self.cloud_group.update(self.game_speed)
         
-        self.score +=1
+        self.score += 0.1
         
         self.update_background()
         self.spawn_obstacles()
@@ -79,14 +79,6 @@ class Game:
         if len(self.obstacle_group) == 0:
             # Escolhe aleatoriamente entre criar um Cacto ou um Pássaro
             obstacle = random.choice([Cactus(), Bird()])
-            
-            obstacle_type_choice = random.randint(0, 2)
-            if obstacle_type_choice == 0:
-                obstacle = Obstacle(SMALL_CACTUS, 'small_cactus')
-            elif obstacle_type_choice == 1:
-                obstacle = Obstacle(LARGE_CACTUS, 'large_cactus')
-            else:
-                obstacle = Bird()
             self.obstacle_group.add(obstacle)
             self.all_sprites.add(obstacle)
             
