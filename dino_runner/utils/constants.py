@@ -75,5 +75,7 @@ GAME_OVER = pygame.image.load(os.path.join(IMG_DIR, 'Other/GameOver.png'))
 
 RESTART = pygame.transform.scale(pygame.image.load(os.path.join(IMG_DIR, 'Other/Reset.png')), (60, 60)) 
 
+EXPLOSION = pygame.transform.scale(pygame.image.load(os.path.join(IMG_DIR, 'Other/explosion.png')), (100, 100)) 
+
 DEFAULT_TYPE = "default"
 SHIELD_TYPE = "shield"

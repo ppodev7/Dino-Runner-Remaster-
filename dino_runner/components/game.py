@@ -6,8 +6,8 @@ from dino_runner.utils.text_utils import draw_message_component
 from dino_runner.components.player import Player
 from dino_runner.components.cloud import Cloud
 from dino_runner.components.obstacles.cactus import Cactus
-from dino_runner.components.obstacles.obstacle import Obstacle
 from dino_runner.components.obstacles.bird import Bird
+from dino_runner.components.explosion import Explosion
 
 
 
@@ -31,6 +31,7 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.cloud_group = pygame.sprite.Group()
         self.obstacle_group = pygame.sprite.Group()
+        self.explosion_group = pygame.sprite.Group()
         
         self.player = Player()
         self.all_sprites.add(self.player)
@@ -49,6 +50,7 @@ class Game:
         self.obstacle_group.empty()
         self.cloud_group.empty()
         self.all_sprites.empty()
+        self.explosion_group.empty()
         
         self.player = Player()
         self.all_sprites.add(self.player)
@@ -90,6 +92,8 @@ class Game:
         self.update_background()
         self.spawn_obstacles()
         self.obstacle_group.update(self.game_speed)
+        self.explosion_group.update()
+        self.check_laser_collision()
         self.check_collision()
         
         
@@ -100,7 +104,22 @@ class Game:
             self.obstacle_group.add(obstacle)
             self.all_sprites.add(obstacle)
             
-            
+    def check_laser_collision(self):
+        for laser in self.player.lasers[:]:
+            # Verifica se o laser colidiu com algum obstáculo.
+            for obstacle in self.obstacle_group:
+                if laser.colliderect(obstacle.rect):
+                    # A colisão só importa se o obstáculo for um pássaro.
+                    if isinstance(obstacle, Bird):
+                        # Remove o pássaro e o laser.
+                        obstacle.kill()
+                        self.player.lasers.remove(laser)
+                        # Cria uma instância da classe Explosion na posição do pássaro.
+                        explosion = Explosion(obstacle.rect.center)
+                        self.all_sprites.add(explosion)
+                        self.explosion_group.add(explosion)
+                        break
+
     def check_collision(self):
         if pygame.sprite.spritecollide(self.player, self.obstacle_group, False, pygame.sprite.collide_mask):
             

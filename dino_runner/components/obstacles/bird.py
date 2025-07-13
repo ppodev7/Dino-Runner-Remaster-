@@ -4,7 +4,7 @@ from dino_runner.components.obstacles.obstacle import Obstacle
 from dino_runner.utils.constants import BIRD
 
 class Bird(Obstacle):
-    Y_POS_LIST = [250, 290] # Alturas alternadas de posições de vioo do pássaro
+    Y_POS_LIST = [250, 290] # Alturas alternadas de posições de voo do pássaro
 
     def __init__(self):
         self.image_list = BIRD # Puxa as imgs do passaro
