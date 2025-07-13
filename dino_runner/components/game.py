@@ -17,6 +17,11 @@ class Game:
         self.clock = pygame.time.Clock()
         self.jogando = True
 
+        self.score = 0 
+        self.high_score = 0
+        self.font = pygame.font.Font(None, 30)
+        
+        
         self.game_speed = 10
         self.x_pos_bg = 0
         self.y_pos_bg = 380
@@ -61,6 +66,8 @@ class Game:
         
         self.cloud_group.update(self.game_speed)
         
+        self.score +=1
+        
         self.update_background()
         self.spawn_obstacles()
         self.obstacle_group.update(self.game_speed)
@@ -103,6 +110,12 @@ class Game:
     def draw(self):
         self.screen.fill((255, 255, 255))
         self.draw_background()
+        
+        score_text = self.font.render(f"Pontos: {int(self.score)}", True, (0, 0, 0))
+        text_rect = score_text.get_rect()
+        text_rect.topright = (SCREEN_WIDTH - 20, 20)
+        
+        self.screen.blit(score_text, text_rect)
         
         self.all_sprites.draw(self.screen) 
         for laser in self.player.lasers: # Adiciona o desenho dos lasers na tela

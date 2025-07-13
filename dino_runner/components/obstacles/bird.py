@@ -26,7 +26,7 @@ class Bird(Obstacle):
         self.step_index += 1
 
         # Movimento do pássaro (mais rápido que o cenário)
-        self.rect.x -= game_speed + 5
+        self.rect.x -= game_speed + 7
 
         if self.rect.right < 0:
             self.kill()
