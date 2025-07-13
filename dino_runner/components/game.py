@@ -93,10 +93,10 @@ class Game:
             self.player.die()
             self.draw()
             
-            game_over_rect = GAME_OVER.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+            game_over_rect = GAME_OVER.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 80))
             self.screen.blit(GAME_OVER, game_over_rect)
-            draw_message_component(f"Sua Pontuação: {int(self.score)}", self.screen, pos_y_center=SCREEN_HEIGHT // 2 + 40)
-            draw_message_component(f"Recorde: {int(self.high_score)}", self.screen, pos_y_center=SCREEN_HEIGHT // 2 + 90)
+            draw_message_component(f"Sua Pontuação: {int(self.score)}", self.screen, pos_y_center=SCREEN_HEIGHT // 2)
+            draw_message_component(f"Recorde: {int(self.high_score)}", self.screen, pos_y_center=SCREEN_HEIGHT // 2 + 40)
             
             pygame.display.update()
             pygame.time.delay(2300)
