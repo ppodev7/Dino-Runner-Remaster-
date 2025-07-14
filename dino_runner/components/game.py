@@ -134,7 +134,7 @@ class Game:
             # Adiciona 5 balas ao jogador.
             self.player.bullet_count += 5
             # Define o próximo marco, 300 pontos à frente do atual.
-            self.bullet_milestone += 300
+            self.bullet_milestone += 150
             # Cria uma notificação na tela para informar o jogador.
             notification = Notification("Vamos lá, 5 lazers!")
             self.all_sprites.add(notification)
@@ -158,7 +158,7 @@ class Game:
 
                         
                         self.player.birds_killed_count += 1
-                        if self.player.birds_killed_count >= 5:
+                        if self.player.birds_killed_count >= 3:
                             self.player.birds_killed_count = 0  
                             self.player.activate_shield()
                             
@@ -224,7 +224,7 @@ class Game:
         self.screen.blit(score_text, text_rect)
         
         # Desenha a contagem de balas na tela
-        bullet_text = self.font.render(f"Balas: {self.player.bullet_count}", True, (0, 0, 0))
+        bullet_text = self.font.render(f"Lazers: {self.player.bullet_count}", True, (0, 0, 0))
         bullet_rect = bullet_text.get_rect()
         bullet_rect.topleft = (20, 20)
         self.screen.blit(bullet_text, bullet_rect)

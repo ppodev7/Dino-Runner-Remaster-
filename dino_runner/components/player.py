@@ -30,7 +30,7 @@ class Player(pygame.sprite.Sprite):
         self.shield_time = 0
         self.birds_killed_count = 0 # Lógica para a ativaçõa do escudo 
         
-        self.jump_vel = 7  # Valor inicial do pulo
+        self.jump_vel = 5.5 # Valor inicial do pulo
         
         #lasers
         self.bullet_count = 0
@@ -96,7 +96,7 @@ class Player(pygame.sprite.Sprite):
             self.is_ducking = False
             # A força do pulo agora depende da velocidade do jogo!
 
-            self.jump_vel = 7 + (game_speed - 10) * 0.05
+            self.jump_vel = 5.5 + (game_speed - 10) * 0.05
         elif user_input [pygame.K_DOWN] and not self.is_jumping:
             self.is_running = False
             self.is_jumping = False
