@@ -9,8 +9,8 @@ from dino_runner.components.player import Player
 from dino_runner.components.cloud import Cloud
 from dino_runner.components.obstacles.cactus import Cactus
 from dino_runner.components.obstacles.bird import Bird
-from dino_runner.components.explosion import Explosion # Mantém a importação da explosão.
-from dino_runner.components.notification import Notification # Adiciona a importação da notificação.
+from dino_runner.components.explosion import Explosion 
+from dino_runner.components.notification import Notification 
 
 os.environ['SDL_VIDEO_CENTERED'] = '1' #centraliza a janela no meio da tela 
 
@@ -22,6 +22,10 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.jogando = True
+        
+        pygame.mixer.music.load('dino_runner/assets/sound/music.mp3')
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1) # A música toca em loop infinito
 
         self.score = 0
         self.high_score = 0
