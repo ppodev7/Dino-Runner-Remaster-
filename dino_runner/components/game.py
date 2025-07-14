@@ -1,7 +1,7 @@
 import pygame 
 import sys 
 import random
-
+import os
 
 from dino_runner.utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT, BG, GAME_OVER, RESTART
 from dino_runner.utils.text_utils import draw_message_component
@@ -12,7 +12,7 @@ from dino_runner.components.obstacles.bird import Bird
 from dino_runner.components.explosion import Explosion # Mantém a importação da explosão.
 from dino_runner.components.notification import Notification # Adiciona a importação da notificação.
 
-
+os.environ['SDL_VIDEO_CENTERED'] = '1' #centraliza a janela no meio da tela 
 
 class Game: 
     def __init__(self):
@@ -28,7 +28,7 @@ class Game:
         self.font = pygame.font.Font(None, 30)
         self.score_milestone = 100
         # Adiciona um marco de pontuação específico para ganhar balas.
-        self.bullet_milestone = 300
+        self.bullet_milestone = 100
         
         self.game_speed = 10
         self.x_pos_bg = 0
@@ -56,7 +56,7 @@ class Game:
         self.score_milestone = 100
         self.x_pos_bg = 0
         # Reseta o marco de balas quando o jogo é reiniciado.
-        self.bullet_milestone = 150
+        self.bullet_milestone = 100
         self.y_pos_bg = 380
         
         self.obstacle_group.empty()
@@ -134,7 +134,7 @@ class Game:
             # Adiciona 5 balas ao jogador.
             self.player.bullet_count += 5
             # Define o próximo marco, 300 pontos à frente do atual.
-            self.bullet_milestone += 150
+            self.bullet_milestone += 100
             # Cria uma notificação na tela para informar o jogador.
             notification = Notification("Vamos lá, 5 lazers!")
             self.all_sprites.add(notification)
