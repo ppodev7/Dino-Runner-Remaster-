@@ -2,14 +2,15 @@ import pygame
 import sys 
 import random
 
-# Agora que constants.py lida com sua própria inicialização, podemos importar tudo de forma limpa.
+
 from dino_runner.utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT, BG, GAME_OVER, RESTART
 from dino_runner.utils.text_utils import draw_message_component
 from dino_runner.components.player import Player
 from dino_runner.components.cloud import Cloud
 from dino_runner.components.obstacles.cactus import Cactus
 from dino_runner.components.obstacles.bird import Bird
-from dino_runner.components.explosion import Explosion
+from dino_runner.components.explosion import Explosion # Mantém a importação da explosão.
+from dino_runner.components.notification import Notification # Adiciona a importação da notificação.
 
 
 
@@ -26,6 +27,8 @@ class Game:
         self.high_score = 0
         self.font = pygame.font.Font(None, 30)
         self.score_milestone = 100
+        # Adiciona um marco de pontuação específico para ganhar balas.
+        self.bullet_milestone = 300
         
         self.game_speed = 10
         self.x_pos_bg = 0
@@ -35,6 +38,8 @@ class Game:
         self.cloud_group = pygame.sprite.Group()
         self.obstacle_group = pygame.sprite.Group()
         self.explosion_group = pygame.sprite.Group()
+        # Cria um grupo para gerenciar as notificações na tela.
+        self.notification_group = pygame.sprite.Group()
         
         self.player = Player()
         self.all_sprites.add(self.player)
@@ -50,12 +55,15 @@ class Game:
         self.game_speed = 10
         self.score_milestone = 100
         self.x_pos_bg = 0
+        # Reseta o marco de balas quando o jogo é reiniciado.
+        self.bullet_milestone = 150
         self.y_pos_bg = 380
         
         self.obstacle_group.empty()
         self.cloud_group.empty()
         self.all_sprites.empty()
         self.explosion_group.empty()
+        self.notification_group.empty()
         
         self.player = Player()
         self.all_sprites.add(self.player)
@@ -88,17 +96,21 @@ class Game:
 
     def update(self, user_input):
         
-        self.player.update(user_input)
+        self.player.update(user_input, self.game_speed)
         
         self.cloud_group.update(self.game_speed)
         
         self.score += 0.1
         self.check_milestone()
+        # Chama o novo método para verificar se o jogador deve ganhar balas.
+        self.check_bullet_milestone()
         
         self.update_background()
         self.spawn_obstacles()
         self.obstacle_group.update(self.game_speed)
         self.explosion_group.update()
+        # Atualiza o estado de todas as notificações (para fazê-las desaparecer).
+        self.notification_group.update()
         self.check_laser_collision()
         self.check_collision()
         
@@ -113,8 +125,20 @@ class Game:
     def check_milestone(self):
         if self.score >= self.score_milestone:
             
-            self.game_speed += 3
-            self.score_milestone += 100
+            self.game_speed += 1
+            self.score_milestone += 50
+            
+    def check_bullet_milestone(self):
+        # Verifica se a pontuação atual atingiu o marco para ganhar balas.
+        if self.score >= self.bullet_milestone:
+            # Adiciona 5 balas ao jogador.
+            self.player.bullet_count += 5
+            # Define o próximo marco, 300 pontos à frente do atual.
+            self.bullet_milestone += 300
+            # Cria uma notificação na tela para informar o jogador.
+            notification = Notification("Vamos lá, 5 lazers!")
+            self.all_sprites.add(notification)
+            self.notification_group.add(notification)
             
             
     def check_laser_collision(self):
@@ -131,10 +155,20 @@ class Game:
                         explosion = Explosion(obstacle.rect.center)
                         self.all_sprites.add(explosion)
                         self.explosion_group.add(explosion)
+
+                        
+                        self.player.birds_killed_count += 1
+                        if self.player.birds_killed_count >= 5:
+                            self.player.birds_killed_count = 0  
+                            self.player.activate_shield()
+                            
+                            notification = Notification("Escudo ativado (5s)!")
+                            self.all_sprites.add(notification)
+                            self.notification_group.add(notification)
                         break
 
     def check_collision(self):
-        if pygame.sprite.spritecollide(self.player, self.obstacle_group, False, pygame.sprite.collide_mask):
+        if not self.player.is_shielded and pygame.sprite.spritecollide(self.player, self.obstacle_group, False, pygame.sprite.collide_mask):
             
             if self.score > self.high_score:
                 self.high_score = int(self.score)
@@ -188,6 +222,12 @@ class Game:
         text_rect.topright = (SCREEN_WIDTH - 20, 20)
         
         self.screen.blit(score_text, text_rect)
+        
+        # Desenha a contagem de balas na tela
+        bullet_text = self.font.render(f"Balas: {self.player.bullet_count}", True, (0, 0, 0))
+        bullet_rect = bullet_text.get_rect()
+        bullet_rect.topleft = (20, 20)
+        self.screen.blit(bullet_text, bullet_rect)
         
         self.all_sprites.draw(self.screen) 
         for laser in self.player.lasers: # Adiciona o desenho dos lasers na tela
