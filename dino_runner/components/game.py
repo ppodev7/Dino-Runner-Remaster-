@@ -190,11 +190,9 @@ class Game:
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         sys.exit()
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        mouse_pos = pygame.mouse.get_pos()
-                        if restart_rect.collidepoint(mouse_pos):
-                            self.reset()
-                            return
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                        self.reset()
+                        return
 
         
     def draw_background(self):
