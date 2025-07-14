@@ -4,7 +4,9 @@ from dino_runner.utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH
 
 FONT_COLOR = (0, 0, 0)
 FONT_SIZE = 22
-FONT_STYLE = "freesansbold.ttf"
+# Usar None para a fonte padrão do Pygame é mais rápido e evita erros
+# caso o arquivo de fonte não seja encontrado no sistema.
+FONT_STYLE = None
 
 
 def draw_message_component(

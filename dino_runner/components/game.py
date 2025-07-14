@@ -1,7 +1,9 @@
 import pygame 
 import sys 
 import random
-from dino_runner.utils.constants import SCREEN_HEIGHT, SCREEN_WIDTH, BG, GAME_OVER, RESTART
+
+# Agora que constants.py lida com sua própria inicialização, podemos importar tudo de forma limpa.
+from dino_runner.utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT, BG, GAME_OVER, RESTART
 from dino_runner.utils.text_utils import draw_message_component
 from dino_runner.components.player import Player
 from dino_runner.components.cloud import Cloud
@@ -13,6 +15,7 @@ from dino_runner.components.explosion import Explosion
 
 class Game: 
     def __init__(self):
+        # Inicializa os módulos do Pygame e cria a janela principal do jogo.
         pygame.init()
         pygame.display.set_caption("Chrome Dino Runner")
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -22,11 +25,11 @@ class Game:
         self.score = 0
         self.high_score = 0
         self.font = pygame.font.Font(None, 30)
-        
+        self.score_milestone = 100
         
         self.game_speed = 10
         self.x_pos_bg = 0
-        self.y_pos_bg = 380
+        self.y_pos_bg = 380 
 
         self.all_sprites = pygame.sprite.Group()
         self.cloud_group = pygame.sprite.Group()
@@ -45,7 +48,9 @@ class Game:
     def reset(self):
         self.score = 0
         self.game_speed = 10
+        self.score_milestone = 100
         self.x_pos_bg = 0
+        self.y_pos_bg = 380
         
         self.obstacle_group.empty()
         self.cloud_group.empty()
@@ -88,6 +93,7 @@ class Game:
         self.cloud_group.update(self.game_speed)
         
         self.score += 0.1
+        self.check_milestone()
         
         self.update_background()
         self.spawn_obstacles()
@@ -103,6 +109,13 @@ class Game:
             obstacle = random.choice([Cactus(), Bird()])
             self.obstacle_group.add(obstacle)
             self.all_sprites.add(obstacle)
+            
+    def check_milestone(self):
+        if self.score >= self.score_milestone:
+            
+            self.game_speed += 3
+            self.score_milestone += 100
+            
             
     def check_laser_collision(self):
         for laser in self.player.lasers[:]:
