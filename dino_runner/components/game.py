@@ -151,12 +151,12 @@ class Game:
     def check_bullet_milestone(self):
         # Verifica se a pontuação atual atingiu o marco para ganhar balas.
         if self.score >= self.bullet_milestone:
-            # Adiciona 5 balas ao jogador.
+            
             self.player.bullet_count += 5
-            # Define o próximo marco, 300 pontos à frente do atual.
+            
             self.bullet_milestone += 100
-            # Cria uma notificação na tela para informar o jogador.
-            notification = Notification("Vamos lá, 5 lazers!")
+            
+            notification = Notification("Ganhou 5 lazers!")
             self.all_sprites.add(notification)
             self.notification_group.add(notification)
             
@@ -201,8 +201,27 @@ class Game:
             
     def draw_start_screen(self):
         self.screen.fill((255, 255, 255))
-        draw_message_component("Pressione ESPAÇO para começar", self.screen, pos_y_center=SCREEN_HEIGHT // 2)
-        
+
+        # Lista de instruções para exibir na tela inicial
+        instructions = [
+            "Pressione ESPAÇO para começar",
+            "",  # Adiciona uma linha em branco para espaçamento
+            "A cada 100 pontos ganhe 5 lazers!",
+            "A cada 3 pássaros mortos o dino fica invencível por 5 segundos",
+            "Pressione ESPAÇO durante o jogo para atirar",
+            "Use as setas para abaixar e pular!"
+        ]
+
+        line_spacing = 40  # Espaçamento vertical entre as linhas de texto
+        middle_index = len(instructions) // 2  # Encontra o índice da linha central
+
+        # Itera sobre a lista para desenhar cada linha de instrução
+        for i, line in enumerate(instructions):
+            # Calcula a posição Y para cada linha para centralizar o bloco de texto
+            offset = (i - middle_index) * line_spacing
+            y_pos = (SCREEN_HEIGHT // 2) + offset
+            draw_message_component(line, self.screen, pos_y_center=y_pos)
+
         pygame.display.update()
 
     def draw_game_over_screen(self):

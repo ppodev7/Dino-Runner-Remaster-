@@ -9,7 +9,7 @@ class Notification(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
         
         
-        self.lifetime = 60
+        self.lifetime = 70
         
         
     def update(self):
