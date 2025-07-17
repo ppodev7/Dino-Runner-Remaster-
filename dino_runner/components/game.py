@@ -215,24 +215,33 @@ class Game:
             self.x_pos_bg = 0    
     
     
-    def draw(self):
+    def draw(self) -> list[pygame.Rect]:
         self.screen.fill((255, 255, 255))
         self.draw_background()
         
+        # Desenha e armazena o retângulo da pontuação
         score_text = self.font.render(f"Pontos: {int(self.score)}", True, (0, 0, 0))
-        text_rect = score_text.get_rect()
-        text_rect.topright = (SCREEN_WIDTH - 20, 20)
+        score_rect = score_text.get_rect()
+        score_rect.topright = (SCREEN_WIDTH - 20, 20)
+        self.screen.blit(score_text, score_rect)
         
-        self.screen.blit(score_text, text_rect)
-        
-        # Desenha a contagem de balas na tela
+        # Desenha e armazena o retângulo da contagem de lasers
         bullet_text = self.font.render(f"Lazers: {self.player.bullet_count}", True, (0, 0, 0))
         bullet_rect = bullet_text.get_rect()
         bullet_rect.topleft = (20, 20)
         self.screen.blit(bullet_text, bullet_rect)
         
         self.all_sprites.draw(self.screen) 
-        for laser in self.player.lasers: # Adiciona o desenho dos lasers na tela
+        for laser in self.player.lasers:
             pygame.draw.rect(self.screen, self.player.laser_color, laser)
 
-        
+        # Retorna a lista de retângulos que foram modificados
+        return [
+            self.player.rect,
+            * [obstacle.rect for obstacle in self.obstacle_group], # "*" = add varios itens de uma lista
+            * [cloud.rect for cloud in self.cloud_group],
+            * [explosion.rect for explosion in self.explosion_group],
+            * [notification.rect for notification in self.notification_group],
+            score_rect,
+            bullet_rect
+        ]
