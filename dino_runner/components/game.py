@@ -28,13 +28,13 @@ class Game:
         font_path = os.path.join(assets_path, 'Font', 'fonte.ttf')
 
         pygame.mixer.music.load(os.path.join(sound_path, 'music.mp3'))
-        pygame.mixer.music.set_volume(0.7)
+        pygame.mixer.music.set_volume(0.6)
         pygame.mixer.music.play(-1) 
 
         self.laser_sound = pygame.mixer.Sound(os.path.join(sound_path, 'laser.mp3'))
-        self.laser_sound.set_volume(0.3)
+        self.laser_sound.set_volume(0.2)
         self.explosion_sound = pygame.mixer.Sound(os.path.join(sound_path, 'explosion.mp3'))
-        self.explosion_sound.set_volume(0.2)
+        self.explosion_sound.set_volume(0.4)
 
         self.score = 0
         self.high_score = 0
