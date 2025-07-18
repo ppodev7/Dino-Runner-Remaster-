@@ -16,7 +16,6 @@ os.environ['SDL_VIDEO_CENTERED'] = '1' #centraliza a janela no meio da tela
 
 class Game: 
     def __init__(self):
-        # Inicializa os módulos do Pygame e cria a janela principal do jogo.
         pygame.init()
         pygame.display.set_caption("Chrome Dino Runner")
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -24,14 +23,15 @@ class Game:
         self.jogando = True
         
         pygame.mixer.music.load('dino_runner/assets/sound/music.mp3')
-        pygame.mixer.music.set_volume(0.5)
-        pygame.mixer.music.play(-1) # A música toca em loop infinito
+        pygame.mixer.music.set_volume(0.7)
+        pygame.mixer.music.play(-1) 
 
         self.score = 0
         self.high_score = 0
-        self.font = pygame.font.Font(None, 30)
+        font_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'Font', 'fonte.ttf')
+        self.font = pygame.font.Font(font_path, 15) 
+
         self.score_milestone = 100
-        # Adiciona um marco de pontuação específico para ganhar balas.
         self.bullet_milestone = 100
         
         self.game_speed = 10
@@ -59,7 +59,6 @@ class Game:
         self.game_speed = 10
         self.score_milestone = 100
         self.x_pos_bg = 0
-        # Reseta o marco de balas quando o jogo é reiniciado.
         self.bullet_milestone = 100
         self.y_pos_bg = 380 
         
@@ -76,7 +75,7 @@ class Game:
             self.cloud_group.add(cloud)
             self.all_sprites.add(cloud)
         
-        self.game_state = "playing" # Muda para o estado de jogo
+        self.game_state = "playing" 
         
     def execute (self):
         while self.jogando: 
@@ -156,7 +155,7 @@ class Game:
             
             self.bullet_milestone += 100
             
-            notification = Notification("Ganhou 5 lazers!")
+            notification = Notification("Ganhou 5 lazers!", font=self.font)
             self.all_sprites.add(notification)
             self.notification_group.add(notification)
             
@@ -182,7 +181,7 @@ class Game:
                             self.player.birds_killed_count = 0  
                             self.player.activate_shield()
                             
-                            notification = Notification("Escudo ativado (5s)!")
+                            notification = Notification("Escudo ativado (5s)!", font=self.font)
                             self.all_sprites.add(notification)
                             self.notification_group.add(notification)
                         break
@@ -204,12 +203,13 @@ class Game:
 
         # Lista de instruções para exibir na tela inicial
         instructions = [
-            "Pressione ESPAÇO para começar",
-            "",  # Adiciona uma linha em branco para espaçamento
+            "Pressione ESPAÇO para começar!",
+            "", 
             "A cada 100 pontos ganhe 5 lazers!",
             "A cada 3 pássaros mortos o dino fica invencível por 5 segundos",
             "Pressione ESPAÇO durante o jogo para atirar",
-            "Use as setas para abaixar e pular!"
+            "Use as setas para abaixar e pular!",
+            "Você vai evoluindo, o jogo vai ficando mais frenético!"
         ]
 
         line_spacing = 40  # Espaçamento vertical entre as linhas de texto
@@ -220,8 +220,8 @@ class Game:
             # Calcula a posição Y para cada linha para centralizar o bloco de texto
             offset = (i - middle_index) * line_spacing
             y_pos = (SCREEN_HEIGHT // 2) + offset
-            draw_message_component(line, self.screen, pos_y_center=y_pos)
-
+            draw_message_component(line, self.screen, font=self.font, pos_y_center=y_pos)
+            
         pygame.display.update()
 
     def draw_game_over_screen(self):
@@ -231,11 +231,10 @@ class Game:
         game_over_rect = GAME_OVER.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 80))
         self.screen.blit(GAME_OVER, game_over_rect)
 
-        # Desenha mensagens de pontuação e recorde
-        draw_message_component(f"Sua Pontuação: {int(self.score)}", self.screen, pos_y_center=SCREEN_HEIGHT // 2)
-        draw_message_component(f"Recorde: {int(self.high_score)}", self.screen, pos_y_center=SCREEN_HEIGHT // 2 + 40)
+        draw_message_component(f"Sua Pontuação: {int(self.score)}", self.screen, font=self.font, pos_y_center=SCREEN_HEIGHT // 2)
+        draw_message_component(f"Recorde: {int(self.high_score)}", self.screen, font=self.font, pos_y_center=SCREEN_HEIGHT // 2 + 40)
 
-        # Desenha a imagem de reinício
+         # Desenha a imagem de reinício
         restart_rect = RESTART.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 100))
         self.screen.blit(RESTART, restart_rect)
 
@@ -288,5 +287,5 @@ class Game:
             * [explosion.rect for explosion in self.explosion_group],
             * [notification.rect for notification in self.notification_group],
             score_rect,
-            bullet_rect
+            bullet_rect,
         ]
