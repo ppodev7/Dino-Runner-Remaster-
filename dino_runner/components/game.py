@@ -2,6 +2,7 @@ import pygame
 import sys 
 import random
 import os
+import math
 
 from dino_runner.utils.constants import SCREEN_WIDTH, SCREEN_HEIGHT, BG, GAME_OVER, RESTART
 from dino_runner.utils.text_utils import draw_message_component
@@ -285,6 +286,26 @@ class Game:
         bullet_rect.topleft = (20, 20)
         self.screen.blit(bullet_text, bullet_rect)
         
+        
+        if self.player.is_shielded:
+            # Converte o tempo restante de frames para segundos, arredondando para cima
+            time_remaining = math.ceil(self.player.shield_time / 60)
+            
+            # Lógica para a animação piscante
+            if time_remaining <= 2:
+                # Pisca a cada meio segundo (500ms)
+                if (pygame.time.get_ticks() // 500) % 2 == 0:
+                    shield_text = self.font.render("Escudo acabando!", True, (0, 0, 0))
+                    shield_rect = shield_text.get_rect()
+                    shield_rect.bottomleft = (20, SCREEN_HEIGHT - 20)
+                    self.screen.blit(shield_text, shield_rect)
+            else:
+                shield_text = self.font.render(f"Escudo: {time_remaining}s", True, (0, 0, 200)) # Cor azul para normal
+                shield_rect = shield_text.get_rect()
+                shield_rect.bottomleft = (20, SCREEN_HEIGHT - 20)
+                self.screen.blit(shield_text, shield_rect)
+
+
         self.all_sprites.draw(self.screen) 
         for laser in self.player.lasers:
             pygame.draw.rect(self.screen, self.player.laser_color, laser)
