@@ -21,6 +21,8 @@ class Game:
         pygame.key.set_repeat(0)
         pygame.display.set_caption("Chrome Dino Runner")
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        # A conversão da imagem de fundo para o formato de pixel da tela acelera muito as operações de desenho (blit).
+        self.bg = BG.convert()
         self.clock = pygame.time.Clock()
         self.jogando = True
         
@@ -55,6 +57,16 @@ class Game:
         # Cria um grupo para gerenciar as notificações na tela.
         self.notification_group = pygame.sprite.Group()
         
+        self._setup_sprites()
+        
+    def _setup_sprites(self):
+        # Limpa todos os grupos de sprites para garantir um estado limpo.
+        self.all_sprites.empty()
+        self.cloud_group.empty()
+        self.obstacle_group.empty()
+        self.explosion_group.empty()
+        self.notification_group.empty()
+
         self.player = Player()
         self.all_sprites.add(self.player)
         
@@ -62,28 +74,16 @@ class Game:
             cloud = Cloud()
             self.cloud_group.add(cloud)
             self.all_sprites.add(cloud)
-        
-        
+
     def reset(self):
         self.score = 0
         self.game_speed = 10
         self.score_milestone = 100
         self.x_pos_bg = 0
         self.bullet_milestone = 100
-        self.y_pos_bg = 380 
-        
-        self.obstacle_group.empty()
-        self.cloud_group.empty()
-        self.all_sprites.empty()
-        self.explosion_group.empty()
-        self.notification_group.empty()
-        
-        self.player = Player()
-        self.all_sprites.add(self.player)
-        for _ in range(5):
-            cloud = Cloud()
-            self.cloud_group.add(cloud)
-            self.all_sprites.add(cloud)
+        self.y_pos_bg = 380
+
+        self._setup_sprites()
         
         self.game_state = "playing" 
         
