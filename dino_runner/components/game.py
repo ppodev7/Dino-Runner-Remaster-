@@ -220,7 +220,7 @@ class Game:
             "A cada 3 pássaros mortos o dino fica invencível por 5 segundos",
             "Pressione ESPAÇO durante o jogo para atirar",
             "Use as setas para abaixar e pular!",
-            "Você vai evoluindo, o jogo vai ficando mais frenético!"
+            "O tempo passa, fica mais rápido!"
         ]
 
         line_spacing = 40  # Espaçamento vertical entre as linhas de texto
