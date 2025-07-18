@@ -72,6 +72,8 @@ class Player(pygame.sprite.Sprite):
             laser_rect = pygame.Rect(self.rect.right, self.rect.centery - 2, 20, 4)
             self.lasers.append(laser_rect)
             self.bullet_count -= 1
+            return True
+        return False
             
     def die(self):
         self.image = self.dino_dead

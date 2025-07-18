@@ -17,19 +17,28 @@ os.environ['SDL_VIDEO_CENTERED'] = '1' #centraliza a janela no meio da tela
 class Game: 
     def __init__(self):
         pygame.init()
+        pygame.key.set_repeat(0)
         pygame.display.set_caption("Chrome Dino Runner")
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         self.jogando = True
         
-        pygame.mixer.music.load('dino_runner/assets/sound/music.mp3')
+        assets_path = os.path.join(os.path.dirname(__file__), '..', 'assets')
+        sound_path = os.path.join(assets_path, 'Sound')
+        font_path = os.path.join(assets_path, 'Font', 'fonte.ttf')
+
+        pygame.mixer.music.load(os.path.join(sound_path, 'music.mp3'))
         pygame.mixer.music.set_volume(0.7)
         pygame.mixer.music.play(-1) 
 
+        self.laser_sound = pygame.mixer.Sound(os.path.join(sound_path, 'laser.mp3'))
+        self.laser_sound.set_volume(0.3)
+        self.explosion_sound = pygame.mixer.Sound(os.path.join(sound_path, 'explosion.mp3'))
+        self.explosion_sound.set_volume(0.2)
+
         self.score = 0
         self.high_score = 0
-        font_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'Font', 'fonte.ttf')
-        self.font = pygame.font.Font(font_path, 15) 
+        self.font = pygame.font.Font(font_path, 15)
 
         self.score_milestone = 100
         self.bullet_milestone = 100
@@ -110,8 +119,8 @@ class Game:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    self.player.shoot()
+                if event.key == pygame.K_SPACE and self.player.shoot():
+                    self.laser_sound.play()
 
     def update(self, user_input):
         
@@ -155,7 +164,7 @@ class Game:
             
             self.bullet_milestone += 100
             
-            notification = Notification("Ganhou 5 lazers!", font=self.font)
+            notification = Notification("Ganhou 5 lasers!", font=self.font)
             self.all_sprites.add(notification)
             self.notification_group.add(notification)
             
@@ -169,6 +178,7 @@ class Game:
                     if isinstance(obstacle, Bird):
                         # Remove o pássaro e o laser.
                         obstacle.kill()
+                        self.explosion_sound.play()
                         self.player.lasers.remove(laser)
                         # Cria uma instância da classe Explosion na posição do pássaro.
                         explosion = Explosion(obstacle.rect.center)
@@ -205,7 +215,7 @@ class Game:
         instructions = [
             "Pressione ESPAÇO para começar!",
             "", 
-            "A cada 100 pontos ganhe 5 lazers!",
+            "A cada 100 pontos ganhe 5 lasers!",
             "A cada 3 pássaros mortos o dino fica invencível por 5 segundos",
             "Pressione ESPAÇO durante o jogo para atirar",
             "Use as setas para abaixar e pular!",
@@ -270,7 +280,7 @@ class Game:
         self.screen.blit(score_text, score_rect)
         
         # Desenha e armazena o retângulo da contagem de lasers
-        bullet_text = self.font.render(f"Lazers: {self.player.bullet_count}", True, (0, 0, 0))
+        bullet_text = self.font.render(f"Lasers: {self.player.bullet_count}", True, (0, 0, 0))
         bullet_rect = bullet_text.get_rect()
         bullet_rect.topleft = (20, 20)
         self.screen.blit(bullet_text, bullet_rect)
